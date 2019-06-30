@@ -1,5 +1,16 @@
 const { gql } = require('apollo-server');
 
+/*
+
+"""
+Anything inside of these placed above the type or whatever
+can be used for it's description
+"""
+
+# this denotes a comment
+
+*/
+
 const typeDefs = gql`
   type User {
     id: String!
@@ -21,11 +32,10 @@ const typeDefs = gql`
   }
   type LoginCredentials {
     token: String!
-    name: String!
     email: String!
   }
   input LoginInfo {
-    username: String!
+    email: String!
     password: String!
   }
   input UserInput {
@@ -40,7 +50,6 @@ const typeDefs = gql`
   }
   type Query {
     users: [User]!
-    latestReports: [Report]!
     reports: [Report]!
     getToken(input: LoginInfo): LoginCredentials!
   }
