@@ -1,3 +1,5 @@
+// get concurrently for the root folder so I can run a command
+
 const { ApolloServer, gql } = require('apollo-server');
 const mongoose = require('mongoose');
 const { typeDefs } = require('./schema');
@@ -24,7 +26,7 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(() => {
-    server.listen().then(({ url }) => {
+    server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
       console.log(`Server ready at ${url}`);
     });
   })
