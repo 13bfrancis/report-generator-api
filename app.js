@@ -15,9 +15,7 @@ const server = new ApolloServer({
     const token = req.headers.authorization || '';
     const user = await isAuth(token);
     return { user };
-  },
-  introspection: true,
-  playground: true
+  }
 });
 
 mongoose
