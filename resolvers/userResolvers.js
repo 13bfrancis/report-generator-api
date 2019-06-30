@@ -4,7 +4,8 @@ const { User } = require('../models/userModel');
 
 const userResolvers = {
   Query: {
-    users: async () => {
+    users: async (_obj, _args, context) => {
+      console.log(context);
       const users = await User.find();
       return users;
     },
@@ -19,7 +20,7 @@ const userResolvers = {
       if (!isPassword) {
         throw new Error('Username or password is incorrect');
       }
-      const token = jwt.encode({ email }, 'supersecret');
+      const token = jwt.encode({ email }, process.env.JWT_PASS);
       return {
         email,
         token
@@ -39,6 +40,7 @@ const userResolvers = {
       return user;
     },
     deleteUser: async (_, args) => {
+      //have to make sure the user id matches that of the id from args
       const deletedUser = await User.findByIdAndDelete(args.id);
       return deletedUser;
     }
