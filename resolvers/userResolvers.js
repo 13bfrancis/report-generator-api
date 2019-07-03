@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jwt-simple');
 const { User } = require('../models/userModel');
+const { Report } = require('../models/reportModel');
 
 const userResolvers = {
   Query: {
@@ -40,6 +41,7 @@ const userResolvers = {
       const foundUser = await User.findOne({ email }).populate('reports');
       if (!foundUser) throw new Error('User not found');
       const deletedUser = await User.findByIdAndDelete(foundUser.id);
+      await Report.deleteMany({ createdBy: email });
       return deletedUser;
     }
   }
