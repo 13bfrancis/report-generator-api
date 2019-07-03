@@ -12,7 +12,6 @@ const reportResolvers = {
       if (!foundUser) {
         throw new Error('Authorization Error');
       }
-      console.log(foundUser);
       return foundUser.reports;
     }
   },
@@ -45,7 +44,6 @@ const reportResolvers = {
       if (!foundUser) {
         throw new Error('Authorization Error');
       }
-      console.log(foundUser);
       let foundItem = foundUser.reports.indexOf(args.id);
       if (foundItem !== -1) {
         foundUser.reports.splice(foundItem, 1);

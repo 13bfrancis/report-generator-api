@@ -11,7 +11,6 @@ const reportSchema = new mongoose.Schema({
     }
   ],
   createdBy: String
-  //projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }]
 });
 
 const Report = mongoose.model('Report', reportSchema);

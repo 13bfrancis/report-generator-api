@@ -34,15 +34,13 @@ const userResolvers = {
       user.save();
       return user;
     },
-    deleteUser: async (_, args, context) => {
+    deleteUser: async (_obj, _args, context) => {
       if (!context.user) throw new Error('Authorization Failed');
-      const foundUser = await User.findOne({ email: context.user.email });
-      if (!foundUser) throw new Error("Couldn't find user");
-      if (args.id === foundUser.id) {
-        const deletedUser = await User.findByIdAndDelete(args.id);
-        return deletedUser;
-      }
-      throw new Error('Failed to delete user');
+      const { email } = context.user;
+      const foundUser = await User.findOne({ email }).populate('reports');
+      if (!foundUser) throw new Error('User not found');
+      const deletedUser = await User.findByIdAndDelete(foundUser.id);
+      return deletedUser;
     }
   }
 };
