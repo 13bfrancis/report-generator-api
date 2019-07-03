@@ -3,7 +3,8 @@ const { reportResolvers } = require('./reportResolvers');
 
 const resolvers = {
   Query: {
-    ...userResolvers.Query
+    ...userResolvers.Query,
+    ...reportResolvers.Query
   },
   Mutation: {
     ...userResolvers.Mutation,

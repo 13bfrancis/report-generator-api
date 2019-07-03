@@ -4,11 +4,6 @@ const { User } = require('../models/userModel');
 
 const userResolvers = {
   Query: {
-    users: async (_obj, _args, context) => {
-      console.log(context);
-      const users = await User.find();
-      return users;
-    },
     getToken: async (_, args) => {
       const { email, password } = args.input;
       const foundUser = await User.findOne({ email });
@@ -39,10 +34,15 @@ const userResolvers = {
       user.save();
       return user;
     },
-    deleteUser: async (_, args) => {
-      //have to make sure the user id matches that of the id from args
-      const deletedUser = await User.findByIdAndDelete(args.id);
-      return deletedUser;
+    deleteUser: async (_, args, context) => {
+      if (!context.user) throw new Error('Authorization Failed');
+      const foundUser = await User.findOne({ email: context.user.email });
+      if (!foundUser) throw new Error("Couldn't find user");
+      if (args.id === foundUser.id) {
+        const deletedUser = await User.findByIdAndDelete(args.id);
+        return deletedUser;
+      }
+      throw new Error('Failed to delete user');
     }
   }
 };

@@ -49,7 +49,6 @@ const typeDefs = gql`
     progress: String
   }
   type Query {
-    users: [User]!
     reports: [Report]!
     getToken(input: LoginInfo): LoginCredentials!
   }
@@ -57,7 +56,7 @@ const typeDefs = gql`
     createUser(input: UserInput!): User!
     deleteUser(id: String!): User!
     createReport(name: String!, input: [CreateReportInput]!): Report!
-    deleteReport: Report!
+    deleteReport(id: String!): Report!
   }
 `;
 

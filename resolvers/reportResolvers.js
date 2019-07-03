@@ -1,33 +1,60 @@
-const { Project } = require('../models/projectModel');
 const { Report } = require('../models/reportModel');
-
-//last item I need is the query: reports resolver
+const { User } = require('../models/userModel');
 
 const reportResolvers = {
+  Query: {
+    reports: async (_, args, context) => {
+      if (!context.user) {
+        throw new Error('Authorization Error');
+      }
+      const { email } = context.user;
+      const foundUser = await User.findOne({ email }).populate('reports');
+      if (!foundUser) {
+        throw new Error('Authorization Error');
+      }
+      console.log(foundUser);
+      return foundUser.reports;
+    }
+  },
   Mutation: {
     createReport: async (_, args, context) => {
       if (!context.user) {
         throw new Error('Authorization Failed');
       }
-      const { name } = args;
+      const foundUser = await User.findOne({ email: context.user.email });
+      if (!foundUser) throw new Error('Authorization Error');
 
-      const projects = args.input.map(project => {
-        let savedProject = new Project({
-          ...project
-        });
-        savedProject.save();
-        return savedProject;
-      });
-      const projectIds = projects.map(project => project.id.toString());
+      const { name } = args;
       const report = new Report({
         name,
-        projects: projectIds
+        projects: args.input,
+        createdBy: context.user.email
       });
       await report.save();
-      const completeReport = await Report.findById(report._id).populate(
-        'projects'
-      );
-      return completeReport;
+      foundUser.reports.push(report.id);
+      foundUser.save();
+
+      return report;
+    },
+    deleteReport: async (_, args, context) => {
+      if (!context.user) throw new Error('Authorization Failed');
+      const { email } = context.user;
+      const foundUser = await User.findOne({
+        email
+      });
+      if (!foundUser) {
+        throw new Error('Authorization Error');
+      }
+      console.log(foundUser);
+      let foundItem = foundUser.reports.indexOf(args.id);
+      if (foundItem !== -1) {
+        foundUser.reports.splice(foundItem, 1);
+      } else {
+        throw new Error('Cannot Delete this Report');
+      }
+      foundUser.save();
+      const deletedReport = await Report.findByIdAndDelete(args.id);
+      return deletedReport;
     }
   }
 };
