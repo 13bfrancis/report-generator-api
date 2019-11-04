@@ -19,6 +19,6 @@
     "dotenv": "^8.0.0",
     "graphql": "^14.3.1",
     "jwt-simple": "^0.5.6",
-    "mongoose": "^5.6.1"
+    "mongoose": "^5.7.5"
   }
 }
